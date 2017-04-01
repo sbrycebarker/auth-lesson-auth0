@@ -25,8 +25,8 @@ app.use(express.static('./public'));
 /////////////
 // DATABASE //
 /////////////
-const massiveInstance = massive.connectSync({connectionString: 'postgres://localhost/sandbox'})
-
+const massiveInstance = massive.connectSync({connectionString: 'postgres://postgres:1234a@localhost/massive_demo'})
+// 1234a password
 app.set('db', massiveInstance);
 const db = app.get('db');
 
@@ -50,6 +50,7 @@ passport.use(new Auth0Strategy({
       if (!user) { //if there isn't one, we'll create one!
         console.log('CREATING USER');
         db.createUserByAuth([profile.displayName, profile.id], function(err, user) {
+          console.log(err)
           console.log('USER CREATED', userA);
           return done(err, user[0]); // GOES TO SERIALIZE USER
         })
@@ -66,7 +67,7 @@ passport.serializeUser(function(userA, done) {
   console.log('serializing', userA);
   var userB = userA;
   //Things you might do here :
-   //Serialize just the id, get other information to add to session, 
+   //Serialize just the id, get other information to add to session,
   done(null, userB); //PUTS 'USER' ON THE SESSION
 });
 
@@ -75,7 +76,7 @@ passport.deserializeUser(function(userB, done) {
   var userC = userC;
   //Things you might do here :
     // Query the database with the user id, get other information to put on req.user
-  done(null, userC); //PUTS 'USER' ON REQ.USER
+  done(null, userB); //PUTS 'USER' ON REQ.USER
 });
 
 
